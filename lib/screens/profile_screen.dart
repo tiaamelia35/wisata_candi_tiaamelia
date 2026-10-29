@@ -1,5 +1,8 @@
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wisata_candi_tiaamelia/providers/auth_provider.dart';
+import 'package:wisata_candi_tiaamelia/providers/favorite_provider.dart';
+import 'package:wisata_candi_tiaamelia/screens/sign_in_screen.dart';
 import 'package:wisata_candi_tiaamelia/widgets/profile_info_item.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -11,24 +14,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // to-do1: deklarasikan variabel yang dibutuhkan
-  bool isSignedIn = false;
   String fullName = '';
-  String userName = '';
-  int favoriteCandiCount = 0;
-
-  // to-do5: Implementasi fungsi signIn
-  void signIn() {
-    setState(() {
-      isSignedIn = !isSignedIn;
-    });
-  }
-
-  // to-do6: Implementasi fungsi signOut
-  void signOut() {
-    setState(() {
-      isSignedIn = !isSignedIn;
-    });
-  }
 
   // Fungsi saat ikon edit ditekan
   void editProfile() {
@@ -37,6 +23,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+    final favoriteCount =
+        context.watch<FavoriteProvider>().count;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -72,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                       ),
-                      if (isSignedIn)
+                      if (auth.isSignedIn)
                         IconButton(
                           onPressed: () {},
                           icon: Icon(
@@ -95,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ProfileInfoItem(
                       icon: Icons.lock,
                       label: 'Pengguna',
-                      value: userName,
+                      value: auth.username,
                       iconColor: Colors.amber,
                     ),
 
@@ -107,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.person,
                       label: 'Nama',
                       value: fullName,
-                      showEditIcon: isSignedIn,
+                      showEditIcon: auth.isSignedIn,
                       onEditPressed: editProfile,
                       iconColor: Colors.blue,
                     ),
@@ -119,9 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ProfileInfoItem(
                       icon: Icons.favorite,
                       label: 'Favorit',
-                      value: favoriteCandiCount > 0
-                          ? '$favoriteCandiCount'
-                          : '',
+                      value: favoriteCount > 0 ? '$favoriteCount' : '',
                       iconColor: Colors.red,
                     ),
 
@@ -130,15 +118,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Divider(color: Colors.deepPurple[100]),
                     const SizedBox(height: 20),
 
-                    isSignedIn
+                    auth.isSignedIn
                         ? TextButton(
-                      onPressed: signOut,
-                      child: const Text('Sign Out'),
-                    )
+                            onPressed: () =>
+                                context.read<AuthProvider>().signOut(),
+                            child: const Text('Sign Out'),
+                          )
                         : TextButton(
-                      onPressed: signIn,
-                      child: const Text('Sign In'),
-                    ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignInScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text('Sign In'),
+                          ),
                   ],
                 ),
               ),
