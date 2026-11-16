@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:wisata_candi_tiaamelia/data/candi_data.dart';
 import 'package:wisata_candi_tiaamelia/screens/detail_screen.dart';
+import 'package:wisata_candi_tiaamelia/screens/home_screen.dart';
 import 'package:wisata_candi_tiaamelia/screens/profile_screen.dart';
 import 'package:wisata_candi_tiaamelia/screens/search_screen.dart';
 import 'package:wisata_candi_tiaamelia/screens/sign_in_screen.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: DetailScreen(candi: candiList[1]),
       // home: ProfileScreen(),
-      home: SearchScreen(),
+      home: HomeScreen(),
     );
   }
 }
